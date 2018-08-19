@@ -1,0 +1,26 @@
+﻿<ContentDialog
+    x:Class="RabbitsKitchenSupport.ContentDialogCategories"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RabbitsKitchenSupport"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Title="Categories"
+    PrimaryButtonText="OK"
+    PrimaryButtonClick="ContentDialog_PrimaryButtonClick"
+    CloseButtonText="Cancel"
+    DefaultButton="Primary">
+    
+    <ContentDialog.Resources>
+        <Flyout x:Name="FlyoutWarming">
+            <TextBlock x:Name="FlyoutWarmingText" Foreground="Red"/>
+        </Flyout>
+    </ContentDialog.Resources>
+
+    <StackPanel>
+        <TextBox x:Name="TextBoxName" Width="300" Header="Name:" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
+    </StackPanel>
+    
+
+</ContentDialog>

@@ -1,0 +1,90 @@
+﻿<Page x:Name="PageSelectIngredentsXAML"
+    x:Class="RabbitsKitchenSupport.PageSelectIngredents"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RabbitsKitchenSupport"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:controls="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <CollectionViewSource x:Name="GroupedSource" IsSourceGrouped="True"/>
+    </Page.Resources>    
+    
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="ButtonBack" Style="{ThemeResource NavigationBackButtonNormalStyle}" controls:DockPanel.Dock="Left" Tapped="ButtonBack_Tapped"/>
+            <TextBlock Text="Select Ingredents" Style="{ThemeResource TitleTextBlockStyle}" VerticalAlignment="Center" Margin="24,0,0,0" FontFamily="Segoe UI" />
+        </StackPanel>
+
+        <GridView x:Name="GridViewMain" ItemsSource="{Binding Source={StaticResource GroupedSource}, Mode=OneWay}"
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseLayoutRounding="False" Margin="8,8,8,8" FontFamily="Segoe UI" ContainerContentChanging="GridViewMain_ContainerContentChanging" ScrollViewer.HorizontalScrollBarVisibility="Auto" ItemClick="GridViewMain_ItemClick" Grid.Row="1" SelectionMode="Multiple">
+            <GridView.ItemTemplate>
+                <DataTemplate x:Name="gridViewDataTemplate" x:DataType="local:Ingredient">
+                    <StackPanel Padding="4,0,4,0" Margin="0,0,0,8">
+                        <Image x:Name="ImageThumbnail" 
+                               Height="{Binding ElementName=PageSelectIngredentsXAML, Path=ThumbnailSize, Mode=OneWay}" 
+                               Width="{Binding ElementName=PageSelectIngredentsXAML, Path=ThumbnailSize, Mode=OneWay}"
+                               Stretch="Uniform">
+                            <Image.Source>
+                                <Binding Path="ImageSource" >
+                                    <Binding.TargetNullValue>
+                                        <ImageSource>placeholder.png</ImageSource>
+                                    </Binding.TargetNullValue>
+                                </Binding>
+                            </Image.Source>
+                        </Image>
+                        <TextBlock Text="{x:Bind Name, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center"/>
+                        <!--
+                        <TextBlock Text="{x:Bind DefaultUnit, Mode=TwoWay}" Foreground="{ThemeResource SystemControlPageTextBaseMediumBrush}" HorizontalAlignment="Center"/>
+                        -->
+                    </StackPanel>
+                </DataTemplate>
+            </GridView.ItemTemplate>
+
+            <GridView.GroupStyle>
+                <GroupStyle HidesIfEmpty="True">
+                    <GroupStyle.HeaderTemplate>
+                        <DataTemplate x:DataType="local:KeyedList">
+                            <TextBlock Text="{x:Bind Key, Mode=OneWay}" Margin="4" Style="{ThemeResource SubheaderTextBlockStyle}" FontFamily="Segoe UI"/>
+                        </DataTemplate>
+                    </GroupStyle.HeaderTemplate>
+                </GroupStyle>
+            </GridView.GroupStyle>
+
+            <GridView.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <ItemsWrapGrid Orientation="Horizontal"/>
+                </ItemsPanelTemplate>
+            </GridView.ItemsPanel>
+
+        </GridView>
+
+        <CommandBar VerticalAlignment="Bottom" DefaultLabelPosition="Right" Grid.Row="2" FontFamily="Segoe UI">
+            
+            <AppBarButton Icon="ZoomIn" Label="Zoom In" Tag="Zoom In" Tapped="AppBarButton_Tapped"/>
+            <AppBarButton Icon="ZoomOut" Label="Zoom Out" Tag="Zoom Out" Tapped="AppBarButton_Tapped"/>
+            <AppBarToggleButton Label="Group Items" Tag="Group Items" Tapped="AppBarToggleButton_Tapped" IsChecked="True">
+                <AppBarToggleButton.Icon>
+                    <FontIcon FontFamily="Segoe MDL2 Assets" Glyph="&#xF168;"/>
+                </AppBarToggleButton.Icon>
+            </AppBarToggleButton>
+
+            <AppBarSeparator />
+
+            <AppBarButton Icon="Accept" Label="Accept" Tag="Accept" Tapped="AppBarButton_Tapped"/>
+            <AppBarButton Icon="Cancel" Label="Cancel" Tag="Cancel" Tapped="AppBarButton_Tapped"/>
+
+        </CommandBar>
+
+
+    </Grid>
+</Page>
