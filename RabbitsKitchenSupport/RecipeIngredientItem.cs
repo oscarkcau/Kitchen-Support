@@ -16,12 +16,14 @@ namespace RabbitsKitchenSupport
 
 		// private fields
 		private long _id;
+		private long _recipeId;
 		private long _ingredientId;
 		private double _quantity;
 		private Ingredient _ingredient;
 
 		// public properties
 		public long ID { get => _id; set => SetField(ref _id, value); }
+		public long RecipeID { get => _recipeId; set => SetField(ref _recipeId, value); }
 		public long IngredientID { get => _ingredientId; set => SetField(ref _ingredientId, value); }
 		public double Quantity { get => _quantity; set => SetField(ref _quantity, value); }
 		[NonDBValue] public Ingredient Ingredient { get => _ingredient; set => SetField(ref _ingredient, value); }
@@ -33,7 +35,7 @@ namespace RabbitsKitchenSupport
 		public static void CreateDBTable(SqliteConnection db)
 		{
 			string tableCommand = "CREATE TABLE IF NOT EXISTS " +
-				$"{DBTableName} (ID INTEGER PRIMARY KEY, IngredientID INTEGER NULL, Quantity REAL NULL)";
+				$"{DBTableName} (ID INTEGER PRIMARY KEY, RecipeID INTEGER NULL, IngredientID INTEGER NULL, Quantity REAL NULL)";
 			SqliteCommand createTable = new SqliteCommand(tableCommand, db);
 			createTable.ExecuteReader();
 		}

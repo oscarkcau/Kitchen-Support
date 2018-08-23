@@ -108,9 +108,10 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
 
-            <AppBarSeparator />
-
-            <AppBarButton Icon="Library" Label="Edit Categories" Tag="Edit Categories" Tapped="AppBarButton_Tapped"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Library" Label="Edit Categories" Tag="Edit Categories" Tapped="AppBarButton_Tapped"/>
+            </CommandBar.SecondaryCommands>
+            
         </CommandBar>
     </Grid>
 </Page>

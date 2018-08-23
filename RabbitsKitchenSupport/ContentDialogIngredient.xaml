@@ -21,11 +21,14 @@
     <StackPanel Orientation="Horizontal">
         <StackPanel>
             <TextBox x:Name="TextBoxName" Width="300" Header="Name:" Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=Explicit}"/>
-            <ComboBox x:Name="ComboBoxCategory" Header="Category:"
+            <StackPanel Orientation="Horizontal">
+                <ComboBox x:Name="ComboBoxCategory" Header="Category:"
                       SelectedValue="{Binding Category, Mode=TwoWay, UpdateSourceTrigger=Explicit}"
                       DisplayMemberPath="Name"
                       SelectedValuePath="Name" Margin="0,8,0,0"
                       />
+                <Button x:Name="ButtonAddNewCategory" Content="Add New Category" VerticalAlignment="Bottom" Margin="8,0,0,0" Tapped="ButtonAddNewCategory_Tapped"/>
+            </StackPanel>
             <ComboBox x:Name="ComboBoxUnit" Header="Default Unit:"
                       SelectedValue="{Binding DefaultUnit, Mode=TwoWay, UpdateSourceTrigger=Explicit}" Margin="0,8,0,0"
                       />        </StackPanel>

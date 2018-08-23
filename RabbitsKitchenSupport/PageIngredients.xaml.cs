@@ -14,11 +14,11 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
 using Microsoft.Toolkit.Uwp.UI.Animations;
 using Windows.UI.Xaml.Hosting;
 using Windows.Foundation.Metadata;
 using Windows.UI.Composition;
+using System.Threading.Tasks;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
@@ -59,7 +59,15 @@ namespace RabbitsKitchenSupport
 					case "Edit Categories":
 						{
 							var frame = Window.Current.Content as Frame;
-							frame.Navigate(typeof(PageCategories), ("Ingredient Categories", MainModelView.Current.IngredientCategories));
+							frame.Navigate(typeof(PageCategories), 
+								("Ingredient Categories", "Ingredient Category", MainModelView.Current.IngredientCategories));
+						}
+						break;
+					case "Edit Providers":
+						{
+							var frame = Window.Current.Content as Frame;
+							frame.Navigate(typeof(PageCategories), 
+								("Ingredient Providers", "Ingredient Providers", MainModelView.Current.IngredientProviders));
 						}
 						break;
 				}
@@ -87,24 +95,55 @@ namespace RabbitsKitchenSupport
 
 			DeleteFlyout.Hide();
 		}
+		private void GridViewMain_ItemClick(object sender, ItemClickEventArgs e)
+		{
+			if (e.ClickedItem == this.GridViewMain.SelectedItem)
+			{
+				var frame = Window.Current.Content as Frame;
+				frame.Navigate(typeof(PageIngredientDetails), e.ClickedItem);
+			}
+		}
 
 		// private methods
 		private async void AddIngredient()
 		{
+			// prepare and show dialog
 			var ingredient = new Ingredient();
 			var dialog = new ContentDialogIngredient("Add Ingredient", ingredient);
 			var result = await dialog.ShowAsync();
+
+			// while Add New Category button is pressed
+			while (dialog.Tag is string && (string)(dialog.Tag) == "Add New Category")
+			{
+				await AddCategory(); // show add category dialog 
+				dialog.Tag = null; // remember to reset Tag property
+				result = await dialog.ShowAsync(); // show ingredient dialog again
+			}
+
+			// if ok button is pressed
 			if (result == ContentDialogResult.Primary)
 			{
 				MainModelView.Current.AddIngredient(ingredient);
 			}
+
 		}
 		private async void EditIngredient()
 		{
 			if (!(this.GridViewMain.SelectedItem is Ingredient ingredient)) return;
 
+			// prepare and show dialog
 			var dialog = new ContentDialogIngredient("Edit Ingredient", ingredient);
 			var result = await dialog.ShowAsync();
+
+			// while Add New Category button is pressed
+			while (dialog.Tag is string && (string)(dialog.Tag) == "Add New Category")
+			{
+				await AddCategory(); // show add category dialog 
+				dialog.Tag = null; // remember to reset Tag property
+				result = await dialog.ShowAsync(); // show ingredient dialog again
+			}
+
+			// if ok button is pressed
 			if (result == ContentDialogResult.Primary)
 			{
 				MainModelView.Current.UpdateIngredient(ingredient);
@@ -123,6 +162,16 @@ namespace RabbitsKitchenSupport
 		private void ZoomOutThumbnails()
 		{
 			if (ThumbnailSize > 100) ThumbnailSize -= 40;
+		}
+		private async Task AddCategory()
+		{
+			var category = new Category();
+			var dialog = new ContentDialogCategories("Add Ingredient Category", category);
+			var result = await dialog.ShowAsync();
+			if (result == ContentDialogResult.Primary)
+			{
+				MainModelView.Current.AddCategory(category, MainModelView.Current.IngredientCategories);
+			}
 		}
 
 		// methods for grid animation
@@ -165,11 +214,12 @@ namespace RabbitsKitchenSupport
 
 		// INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+		private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
 		{
 			if (EqualityComparer<T>.Default.Equals(field, value)) return;
 			field = value;
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
+
 	}
 }

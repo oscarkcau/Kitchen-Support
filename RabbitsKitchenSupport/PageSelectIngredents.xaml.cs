@@ -23,11 +23,11 @@ using Windows.UI.Xaml.Navigation;
 
 namespace RabbitsKitchenSupport
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class PageSelectIngredents : Page, INotifyPropertyChanged
-    {
+	/// <summary>
+	/// An empty page that can be used on its own or navigated to within a Frame.
+	/// </summary>
+	public sealed partial class PageSelectIngredents : Page, INotifyPropertyChanged
+	{
 		private ImplicitAnimationCollection _implicitAnimations;
 		double _thumbnailSize = 160;
 
@@ -36,8 +36,8 @@ namespace RabbitsKitchenSupport
 
 		// constructor
 		public PageSelectIngredents()
-        {
-            this.InitializeComponent();
+		{
+			this.InitializeComponent();
 
 			// register keyboard events for back action
 			KeyboardAccelerator GoBack = new KeyboardAccelerator();
@@ -187,7 +187,7 @@ namespace RabbitsKitchenSupport
 
 		// INotifyPropertyChanged implementation
 		public event PropertyChangedEventHandler PropertyChanged;
-		protected void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
+		private void SetField<T>(ref T field, T value, [CallerMemberName] string propertyName = null)
 		{
 			if (EqualityComparer<T>.Default.Equals(field, value)) return;
 			field = value;

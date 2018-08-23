@@ -37,6 +37,7 @@ namespace RabbitsKitchenSupport
 		public GroupedList GroupedRecipes { get; private set; }
 		public CategoryList IngredientCategories { get; private set; } = new CategoryList();
 		public CategoryList RecipeCategories { get; private set; } = new CategoryList();
+		public CategoryList IngredientProviders { get; private set; } = new CategoryList();
 
 		// constructor
 		private MainModelView()
@@ -163,6 +164,48 @@ namespace RabbitsKitchenSupport
 			IngredientCategories.CountItemsFrom(GroupedIngredients);
 		}
 
+		public void AddIngredientPurchase(IngredientPurchase item)
+		{
+			DBHelper.Insert(item);
+		}
+		public void UpdateIngredientPurchase(IngredientPurchase item)
+		{
+			DBHelper.Update(item);
+		}
+		public void DeleteIngredientPurchase(IngredientPurchase item)
+		{
+			DBHelper.Delete(item);
+		}
+		public ObservableCollection<IngredientPurchase> GetIngredientPurchase(Ingredient ingredient, int months = -1)
+		{
+			string clause = $"WHERE IngredientID = {ingredient.ID}";
+			if (months > 0)
+			{
+				DateTimeOffset firstDate = DateTimeOffset.Now.AddMonths(-months);
+				clause += $" AND DateTicks >= {firstDate.UtcTicks}";
+			}
+
+			var list = DBHelper.Populate<IngredientPurchase>(null, clause);
+			foreach (var item in list)
+			{
+				item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
+			}
+
+			return list;
+		}
+		public double? GetAverageIngredientPurchaseCost(Ingredient ingredient, int months = -1)
+		{
+			string selectClause = "(sum(Cost) / sum(Quantity))";
+			string whereClause = $"WHERE IngredientID = {ingredient.ID}";
+			if (months > 0)
+			{
+				DateTimeOffset firstDate = DateTimeOffset.Now.AddMonths(-months);
+				whereClause += $" AND DateTicks >= {firstDate.UtcTicks}";
+			}
+
+			return DBHelper.Sclar<IngredientPurchase>(null, selectClause, whereClause);
+		}
+
 		public void AddRecipe(Recipe item)
 		{
 			// add new record to database
@@ -220,29 +263,29 @@ namespace RabbitsKitchenSupport
 			RecipeCategories.CountItemsFrom(GroupedRecipes);
 		}
 
-        public void AddIngredientItem(RecipeIngredientItem item)
-        {
-            DBHelper.Insert(item);
-        }
-        public void UpdateIngredientItem(RecipeIngredientItem item)
-        {
-            DBHelper.Update(item);
-        }
-        public void DeleteIngredientItem(RecipeIngredientItem item)
-        {
-            DBHelper.Delete(item);
-        }
-        public ObservableCollection<RecipeIngredientItem> GetIngredientItems(Recipe recipe)
-        {
-            var list = DBHelper.Populate<RecipeIngredientItem>(null, $"WHERE IngredientID = {recipe.ID}");
+		public void AddIngredientItem(RecipeIngredientItem item)
+		{
+			DBHelper.Insert(item);
+		}
+		public void UpdateIngredientItem(RecipeIngredientItem item)
+		{
+			DBHelper.Update(item);
+		}
+		public void DeleteIngredientItem(RecipeIngredientItem item)
+		{
+			DBHelper.Delete(item);
+		}
+		public ObservableCollection<RecipeIngredientItem> GetIngredientItems(Recipe recipe)
+		{
+			var list = DBHelper.Populate<RecipeIngredientItem>(null, $"WHERE RecipeID = {recipe.ID}");
 
-            foreach (var item in list)
-            {
-                item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
-            }
+			foreach (var item in list)
+			{
+				item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
+			}
 
-            return list;
-        }
+			return list;
+		}
 
 		// private methods
 		private void InitializeDatabase()
@@ -256,8 +299,8 @@ namespace RabbitsKitchenSupport
 			db.Open();
 			DBHelper.Connection = db;
 
-			// create tables if not exist
-			CategoryList[] categoryLists = { IngredientCategories, RecipeCategories };
+			// create category tables if not exist
+			CategoryList[] categoryLists = { IngredientCategories, RecipeCategories, IngredientProviders };
 			foreach (var list in categoryLists)
 			{
 				string tableName = GetDBTableName(list);
@@ -267,14 +310,17 @@ namespace RabbitsKitchenSupport
 				createTable.ExecuteReader();
 			}
 
+			// create main tables if not exist
 			Ingredient.CreateDBTable(db);
+			IngredientPurchase.CreateDBTable(db);
 			Recipe.CreateDBTable(db);
-            RecipeIngredientItem.CreateDBTable(db);
-        }
+			RecipeIngredientItem.CreateDBTable(db);
+		}
 		private void ReadAllFromDB()
 		{
 			this.IngredientCategories = DBHelper.Populate<Category>(GetDBTableName(IngredientCategories));
 			this.RecipeCategories = DBHelper.Populate<Category>(GetDBTableName(RecipeCategories));
+			this.IngredientProviders = DBHelper.Populate<Category>(GetDBTableName(IngredientProviders));
 			this.Ingredients = DBHelper.Populate<Ingredient>();
 			this.Recipes = DBHelper.Populate<Recipe>();
 			this.GroupedIngredients = this.Ingredients.GetGroupedList();
@@ -284,6 +330,7 @@ namespace RabbitsKitchenSupport
 		{
 			if (list == IngredientCategories) return "Ingredient_Category";
 			else if (list == RecipeCategories) return "Recipe_Category";
+			else if (list == IngredientProviders) return "Ingredient_Provider";
 
 			throw new ArgumentException();
 		} 

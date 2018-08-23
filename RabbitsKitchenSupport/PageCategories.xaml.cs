@@ -24,6 +24,7 @@ namespace RabbitsKitchenSupport
 	public sealed partial class PageCategories : Page
 	{
 		// private fields
+		string CategoryName;
 		CategoryList categories = null;
 
 		// constructors
@@ -48,9 +49,10 @@ namespace RabbitsKitchenSupport
 		{
 			base.OnNavigatedTo(e);
 
-			var (title, source) = ((string, CategoryList))e.Parameter;
+			var (title, name, source) = ((string, string, CategoryList))e.Parameter;
 
 			this.TextBlockTitle.Text = title;
+			this.CategoryName = name;
 			this.ListViewMain.ItemsSource = this.categories = source;
 		}
 
@@ -89,7 +91,7 @@ namespace RabbitsKitchenSupport
 		private async void AddCategory()
 		{
 			var category = new Category();
-			var dialog = new ContentDialogCategories("Add Category", category);
+			var dialog = new ContentDialogCategories($"Add {CategoryName}", category);
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{
@@ -101,7 +103,7 @@ namespace RabbitsKitchenSupport
 			if (!(this.ListViewMain.SelectedItem is Category category)) return;
 
 			string oldName = category.Name;
-			var dialog = new ContentDialogCategories("Edit Ingredient", category);
+			var dialog = new ContentDialogCategories($"Edit {CategoryName}", category);
 			var result = await dialog.ShowAsync();
 			if (result == ContentDialogResult.Primary)
 			{

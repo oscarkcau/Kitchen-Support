@@ -76,7 +76,7 @@
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\x64\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
-    <NoWarn>;2008</NoWarn>
+    <NoWarn>;2008;IDE0017;</NoWarn>
     <DebugType>full</DebugType>
     <PlatformTarget>x64</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
@@ -108,6 +108,9 @@
     <Compile Include="ContentDialogIngredient.xaml.cs">
       <DependentUpon>ContentDialogIngredient.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ContentDialogIngredientPurchase.xaml.cs">
+      <DependentUpon>ContentDialogIngredientPurchase.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ContentDialogIngredientQuantity.xaml.cs">
       <DependentUpon>ContentDialogIngredientQuantity.xaml</DependentUpon>
     </Compile>
@@ -127,6 +130,9 @@
     <Compile Include="Ingredient.cs" />
     <Compile Include="PageCategories.xaml.cs">
       <DependentUpon>PageCategories.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="PageIngredientDetails.xaml.cs">
+      <DependentUpon>PageIngredientDetails.xaml</DependentUpon>
     </Compile>
     <Compile Include="PageIngredients.xaml.cs">
       <DependentUpon>PageIngredients.xaml</DependentUpon>
@@ -178,6 +184,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="ContentDialogIngredientPurchase.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="ContentDialogIngredientQuantity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -191,6 +201,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="PageCategories.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PageIngredientDetails.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

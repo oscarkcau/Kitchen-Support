@@ -1,0 +1,159 @@
+﻿<Page
+    x:Class="RabbitsKitchenSupport.PageIngredientDetails"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:RabbitsKitchenSupport"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:extensions="using:Microsoft.Toolkit.Uwp.UI.Controls"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+    <Page.Resources>
+        <local:ObjectToBoolConverter x:Key="ObjectToBoolConverter" />
+        <local:StringFormatConverter x:Key="StringFormatConverter"/>
+    </Page.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="720"/>
+                    </VisualState.StateTriggers>
+
+                    <VisualState.Setters>
+                        <Setter Target="FloatingTitle.Visibility" Value="Visible"/>
+                        <Setter Target="BasicPanel.extensions:DockPanel.Dock" Value="Left"/>
+                        <Setter Target="BasicPanel.Orientation" Value="Vertical"/>
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>        
+        
+        <StackPanel Orientation="Horizontal">
+            <Button x:Name="ButtonBack" Style="{ThemeResource NavigationBackButtonNormalStyle}" Tapped="ButtonBack_Tapped"/>
+            <TextBlock Text="Ingredient Details" Style="{ThemeResource TitleTextBlockStyle}" VerticalAlignment="Center" Margin="24,0,0,0" FontFamily="Segoe UI" />
+        </StackPanel>
+
+        <StackPanel x:Name="FloatingTitle" Grid.Row="1" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,36,16">
+            <TextBlock Text="INGREDIENT" FontWeight="Bold" FontStyle="Normal" FontSize="100" FontFamily="Segoe UI" Foreground="#FFD5D5D5" Margin="0,0,0,-40" HorizontalAlignment="Right" />
+            <TextBlock Text="DETAILS" FontWeight="Bold" FontStyle="Normal" FontSize="100" FontFamily="Segoe UI" Foreground="#FFD5D5D5" HorizontalAlignment="Right"/>
+        </StackPanel>
+
+        <extensions:DockPanel LastChildFill="True" Grid.Row="1">
+            <StackPanel x:Name="BasicPanel"  Orientation="Horizontal" extensions:DockPanel.Dock="Top" Margin="8,8,8,8" MinWidth="320">
+                <Image x:Name="ImageThumbnail" Stretch="Uniform" HorizontalAlignment="Center" VerticalAlignment="Top"
+                Source="{Binding ImageSource, TargetNullValue='placeholder.png', FallbackValue='placeholder.png', Mode=OneWay}" Width="240" Margin="8,0,8,16"
+                />
+                <StackPanel Margin="8,0,8,0">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Name:" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockName" Text="{Binding Name}" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Category:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockCategory" Text="{Binding Category}" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="0,16,0,0">
+                        <TextBlock Text="Average Cost" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="0,8,0,0">
+                        <TextBlock Text="1 Month:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockAvgCost1M" Text="No Value" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="0,8,0,0">
+                        <TextBlock Text="3 Month:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockAvgCost3M" Text="No Value" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="0,8,0,0">
+                        <TextBlock Text="6 Month:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockAvgCost6M" Text="No Value" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+                    <StackPanel Orientation="Horizontal" Padding="0,8,0,0">
+                        <TextBlock Text="1 Year:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
+                        <TextBlock x:Name="TextBlockAvgCost1Y" Text="No Value" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
+                    </StackPanel>
+
+                </StackPanel>
+            </StackPanel>
+
+            <extensions:DockPanel LastChildFill="True">
+                <StackPanel Orientation="Horizontal" extensions:DockPanel.Dock="Top">
+                    <TextBlock Text="Recent Purchase" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI" Margin="8,8,8,0" />
+                    <ComboBox x:Name="ComboBoxPeriod" PlaceholderText="Pick a period" SelectedIndex ="0" Width="200" VerticalAlignment="Bottom" Margin="8,8,8,0" SelectionChanged="ComboBoxPeriod_SelectionChanged">
+                        <x:String>1 Month</x:String>
+                        <x:String>3 Months</x:String>
+                        <x:String>6 Months</x:String>
+                        <x:String>1 Year</x:String>
+                        <x:String>All records</x:String>
+                    </ComboBox>
+                </StackPanel>
+
+                <ListView x:Name="ListViewPurchases" VerticalAlignment="Stretch" FontFamily="Segoe UI" Margin="8,8,8,8" 
+                          BorderThickness="2,2,2,2" BorderBrush="{ThemeResource SystemControlForegroundBaseLowBrush}" 
+                          ItemClick="ListViewIngredients_ItemClick" IsItemClickEnabled="True"
+                          VirtualizingStackPanel.VirtualizationMode="Recycling">
+                    <ListView.ItemTemplate>
+                        <DataTemplate x:Name="gridViewDataTemplate" x:DataType="local:IngredientPurchase">
+                            <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
+                                <Border BorderThickness="2,2,2,2" BorderBrush="Gray" >
+                                    <StackPanel VerticalAlignment="Center" Margin="8,0,8,8" MinWidth="80">
+                                        <TextBlock Text="{x:Bind PurchaseMonth, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" />
+                                        <TextBlock Text="{x:Bind PurchaseDate, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,-8,0,0" />
+                                        <TextBlock Text="{x:Bind PurchaseYear, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,-8,0,0" />
+                                    </StackPanel>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="100">
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="{x:Bind Quantity, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Left"/>
+                                        <TextBlock Text="{x:Bind Ingredient.DefaultUnit, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                        <TextBlock Text="{x:Bind Cost, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Left"/>
+                                        <TextBlock Text="HKD" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Left" Margin="8,0,0,0"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <TextBlock Text="{x:Bind Provider, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Left" VerticalAlignment="Center" Margin="16,0,0,0"/>
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListView.ItemTemplate>
+
+                </ListView>
+
+            </extensions:DockPanel>
+
+        </extensions:DockPanel>
+
+
+        <CommandBar VerticalAlignment="Bottom" DefaultLabelPosition="Right" Grid.Row="2" FontFamily="Segoe UI">
+
+            <AppBarButton Icon="Edit" Label="Edit Basic Info" Tag="Edit Basic Info" Tapped="AppBarButton_Tapped" FontFamily="Segoe UI" HorizontalAlignment="Right" VerticalAlignment="Center"/>
+            <AppBarSeparator />
+
+            <AppBarButton Icon="Add" Label="Add Purchase" Tag="Add Purchase" Tapped="AppBarButton_Tapped"/>
+
+            <AppBarButton Icon="Edit" Label="Edit Purchase" Tag="Edit Purchase" Tapped="AppBarButton_Tapped" 
+                          IsEnabled="{x:Bind ListViewPurchases.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToBoolConverter}}"/>
+
+            <AppBarButton Icon="Delete" Label="Remove Purchase" Tag="Remove Purchase"
+                          IsEnabled="{x:Bind ListViewPurchases.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToBoolConverter}}">
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="DeleteFlyout">
+                        <StackPanel>
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Selected ingredient will be removed. Do you want to continue?" Margin="0,0,0,12" />
+                            <Button Click="DeleteConfirmation_Click" Content="Yes, remove ingredient" />
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+
+        </CommandBar>
+    </Grid>
+</Page>

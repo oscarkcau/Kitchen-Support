@@ -27,7 +27,7 @@ namespace RabbitsKitchenSupport
 	{
 		// private field
 		Recipe recipe = null;
-        ObservableCollection<RecipeIngredientItem> ingredientItems = null;
+		ObservableCollection<RecipeIngredientItem> ingredientItems = null;
 
 		// constructor
 		public PageRecipeDetails()
@@ -54,18 +54,18 @@ namespace RabbitsKitchenSupport
 			this.recipe = (Recipe)e.Parameter;
 			this.DataContext = this.recipe;
 
-            if (Frame.Tag == null)
-            {
-                this.ingredientItems = MainModelView.Current.GetIngredientItems(this.recipe);
-            }
+			if (Frame.Tag == null)
+			{
+				this.ingredientItems = MainModelView.Current.GetIngredientItems(this.recipe);
+			}
 
 			this.ListViewIngredients.ItemsSource = this.ingredientItems;
 			
 			if (Frame.Tag is List<Ingredient> items)
 			{
 				AddIngrientItems(items);
-                Frame.Tag = null;
-            }
+				Frame.Tag = null;
+			}
 		}
 		private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
 		{
@@ -98,16 +98,16 @@ namespace RabbitsKitchenSupport
 		{
 			OnBackRequested();
 		}
-        private void ListViewIngredients_ItemClick(object sender, ItemClickEventArgs e)
-        {
-            if (e.ClickedItem == this.ListViewIngredients.SelectedItem)
-            {
-                EditIngrientQuantity();
-            }
-        }
+		private void ListViewIngredients_ItemClick(object sender, ItemClickEventArgs e)
+		{
+			if (e.ClickedItem == this.ListViewIngredients.SelectedItem)
+			{
+				EditIngrientQuantity();
+			}
+		}
 
-        // private methods
-        private async void EditBasicInfo()
+		// private methods
+		private async void EditBasicInfo()
 		{
 			var dialog = new ContentDialogRecipe("Edit Recipe", recipe);
 			var result = await dialog.ShowAsync();
@@ -127,12 +127,13 @@ namespace RabbitsKitchenSupport
 				RecipeIngredientItem item = new RecipeIngredientItem();
 				item.Ingredient = ingredient;
 				item.IngredientID = ingredient.ID;
+				item.RecipeID = recipe.ID;
 
 				// add to the list
 				this.ingredientItems.Add(item);
 
-                // add to db
-                MainModelView.Current.AddIngredientItem(item);
+				// add to db
+				MainModelView.Current.AddIngredientItem(item);
 			}
 		}
 		private void RemoveIngrientItem()
@@ -141,7 +142,7 @@ namespace RabbitsKitchenSupport
 			{
 				ingredientItems.Remove(item);
 
-                MainModelView.Current.DeleteIngredientItem(item);
+				MainModelView.Current.DeleteIngredientItem(item);
 			}
 		}
 		private async void EditIngrientQuantity()
@@ -155,7 +156,8 @@ namespace RabbitsKitchenSupport
 				MainModelView.Current.UpdateIngredientItem(item);
 			}
 		}
-        
+		
+		// methods for back navigation
 		private void BackInvoked(KeyboardAccelerator sender, KeyboardAcceleratorInvokedEventArgs args)
 		{
 			OnBackRequested();
@@ -171,5 +173,5 @@ namespace RabbitsKitchenSupport
 			return false;
 		}
 
-    }
+	}
 }

@@ -106,5 +106,14 @@ namespace RabbitsKitchenSupport
 		{
 			this.borderThumbnail.BorderThickness = new Thickness(1);
 		}
+
+		private void ButtonAddNewCategory_Tapped(object sender, TappedRoutedEventArgs e)
+		{
+			// indicate user pressed Add New Category button
+			this.Tag = "Add New Category";
+
+			// hide the dialog
+			this.Hide();
+		}
 	}
 }

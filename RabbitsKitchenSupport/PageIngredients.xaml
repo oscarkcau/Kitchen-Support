@@ -38,7 +38,9 @@
         <TextBlock x:Name="FloatingTitle" Text="INGREDIENTS" Visibility="Collapsed" HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,36,24" FontWeight="Bold" FontStyle="Normal" FontSize="120" FontFamily="Segoe UI" Foreground="#FFD5D5D5" />
 
         <GridView x:Name="GridViewMain" ItemsSource="{Binding Source={StaticResource GroupedSource}, Mode=OneWay}"
-                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseLayoutRounding="False" Margin="8,8,8,8" FontFamily="Segoe UI" ContainerContentChanging="GridViewMain_ContainerContentChanging" ScrollViewer.HorizontalScrollBarVisibility="Auto">
+                  HorizontalAlignment="Stretch" VerticalAlignment="Stretch" UseLayoutRounding="False" Margin="8,8,8,8" FontFamily="Segoe UI" 
+                  ContainerContentChanging="GridViewMain_ContainerContentChanging" ScrollViewer.HorizontalScrollBarVisibility="Auto" 
+                  IsItemClickEnabled="True" ItemClick="GridViewMain_ItemClick">
             <GridView.ItemTemplate>
                 <DataTemplate x:Name="gridViewDataTemplate" x:DataType="local:Ingredient">
                     <StackPanel Padding="4,0,4,0" Margin="0,0,0,8">
@@ -109,8 +111,11 @@
                 </AppBarButton.Flyout>
             </AppBarButton>
 
-            <AppBarSeparator />
-            <AppBarButton Icon="Library" Label="Edit Categories" Tag="Edit Categories" Tapped="AppBarButton_Tapped"/>
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Icon="Library" Label="Edit Categories" Tag="Edit Categories" Tapped="AppBarButton_Tapped"/>
+                <AppBarButton Icon="Library" Label="Edit Providers" Tag="Edit Providers" Tapped="AppBarButton_Tapped"/>
+            </CommandBar.SecondaryCommands>
+
         </CommandBar>
     </Grid>
 </Page>
