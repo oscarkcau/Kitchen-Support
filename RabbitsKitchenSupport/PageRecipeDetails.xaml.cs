@@ -118,6 +118,10 @@ namespace RabbitsKitchenSupport
 		}
 		private void AddIngrientItems(List<Ingredient> ingredients)
 		{
+			RecipeIngredientItem lastAddedItem = null;
+			int NumOfAddedItem = 0;
+
+			// add all selected ingredients
 			foreach (var ingredient in ingredients)
 			{
 				// skip ingredient if already in the list
@@ -134,6 +138,20 @@ namespace RabbitsKitchenSupport
 
 				// add to db
 				MainModelView.Current.AddIngredientItem(item);
+
+				lastAddedItem = item;
+				NumOfAddedItem++;
+			}
+
+			// if only one ingredient is added
+			// show quantity dialog for subsequent input
+			if (NumOfAddedItem == 1)
+			{
+				//this.ListViewIngredients.UpdateLayout();
+
+				this.ListViewIngredients.SelectedItem = lastAddedItem;
+
+				EditIngrientQuantity();
 			}
 		}
 		private void RemoveIngrientItem()

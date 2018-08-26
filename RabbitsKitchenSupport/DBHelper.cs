@@ -73,6 +73,7 @@ namespace RabbitsKitchenSupport
 			if (result == DBNull.Value) return null;
 			return (double) result;
 		}
+
 		public static bool Insert(IHasID item, string dbTableName = null)
 		{
 			// get the table name if no argument provided

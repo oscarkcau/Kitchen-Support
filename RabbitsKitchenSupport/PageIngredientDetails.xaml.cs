@@ -29,6 +29,7 @@ namespace RabbitsKitchenSupport
 		Ingredient ingredient;
 		ObservableCollection<IngredientPurchase> purchases = new ObservableCollection<IngredientPurchase>();
 		int purchasePeriod = 1; // one month by default
+		double averageCostQuantity = 1;
 
 		// constructor
 		public PageIngredientDetails()
@@ -48,7 +49,7 @@ namespace RabbitsKitchenSupport
 		}
 
 		// event handlers
-		protected override void OnNavigatedTo(NavigationEventArgs e)
+		protected override async void OnNavigatedTo(NavigationEventArgs e)
 		{
 			base.OnNavigatedTo(e);
 
@@ -58,10 +59,7 @@ namespace RabbitsKitchenSupport
 			this.purchases = MainModelView.Current.GetIngredientPurchase(this.ingredient, 1);
 			this.ListViewPurchases.ItemsSource = this.purchases;
 
-			this.TextBlockAvgCost1M.Text = GetAverageCost(1);
-			this.TextBlockAvgCost3M.Text = GetAverageCost(3);
-			this.TextBlockAvgCost6M.Text = GetAverageCost(6);
-			this.TextBlockAvgCost1Y.Text = GetAverageCost(12);
+			await UpdateAverageCosts();
 		}
 		private void ButtonBack_Tapped(object sender, TappedRoutedEventArgs e)
 		{
@@ -112,7 +110,7 @@ namespace RabbitsKitchenSupport
 			}
 
 			// if new period is different from existing one
-			if (newPeriod != purchasePeriod)
+			if (newPeriod != purchasePeriod && this.ingredient != null)
 			{
 				// update period field
 				purchasePeriod = newPeriod;
@@ -124,13 +122,25 @@ namespace RabbitsKitchenSupport
 		}
 
 		// private methods
-		private string GetAverageCost(int month)
+		private async Task UpdateAverageCosts()
 		{
-			double? cost = MainModelView.Current.GetAverageIngredientPurchaseCost(this.ingredient, month);
+			this.TextBlockAvgCost1M.Text = await GetAverageCost(1);
+			this.TextBlockAvgCost3M.Text = await GetAverageCost(3);
+			this.TextBlockAvgCost6M.Text = await GetAverageCost(6);
+			this.TextBlockAvgCost1Y.Text = await GetAverageCost(12);
+		}
+		private async Task<string> GetAverageCost(int month)
+		{
+			return await Task.Run(() =>
+			{
+				double? ret = MainModelView.Current.GetAverageIngredientPurchaseCost(this.ingredient, month);
 
-			if (cost == null) return "No Value";
+				if (ret == null) return "No Value";
 
-			return cost.Value.ToString("N2") + " HKD";
+				double cost = ret.Value * averageCostQuantity;
+
+				return cost.ToString("N2") + " HKD";
+			});
 		}
 		private async void EditBasicInfo()
 		{
@@ -147,7 +157,7 @@ namespace RabbitsKitchenSupport
 			IngredientPurchase purchase = new IngredientPurchase();
 			purchase.Ingredient = this.ingredient;
 			purchase.IngredientID = this.ingredient.ID;
-			purchase.Date = DateTime.Now;
+			purchase.Date = DateTime.Today;
 			var dialog = new ContentDialogIngredientPurchase("Add Ingredient Purchase", purchase);
 			var result = await dialog.ShowAsync();
 
@@ -163,7 +173,10 @@ namespace RabbitsKitchenSupport
 			if (result == ContentDialogResult.Primary)
 			{
 				purchases.Add(purchase);
+
 				MainModelView.Current.AddIngredientPurchase(purchase);
+
+				await UpdateAverageCosts();
 			}
 		}
 		private async void EditPurchase()
@@ -187,16 +200,20 @@ namespace RabbitsKitchenSupport
 				if (result == ContentDialogResult.Primary)
 				{
 					MainModelView.Current.UpdateIngredientPurchase(purchase);
+
+					await UpdateAverageCosts();
 				}
 			}
 		}
-		private void RemovePurchase()
+		private async void RemovePurchase()
 		{
 			if (ListViewPurchases.SelectedItem is IngredientPurchase purchase)
 			{
 				purchases.Remove(purchase);
 
 				MainModelView.Current.DeleteIngredientPurchase(purchase);
+
+				await UpdateAverageCosts();
 			}
 		}
 		private async Task AddProvier()
@@ -226,6 +243,22 @@ namespace RabbitsKitchenSupport
 			return false;
 		}
 
+		private async void ComboBoxAverageCostQuantity_SelectionChanged(object sender, SelectionChangedEventArgs e)
+		{
+			// get the new period in months
+			// note that -1 means all records
+			string value = (string)(e.AddedItems[0]);
+			double newQuantity = double.Parse(value); 
 
+			// if new period is different from existing one
+			if (newQuantity != this.averageCostQuantity && this.ingredient != null)
+			{
+				// update period field
+				averageCostQuantity = newQuantity;
+
+				// update average costs
+				await UpdateAverageCosts();
+			}
+		}
 	}
 }

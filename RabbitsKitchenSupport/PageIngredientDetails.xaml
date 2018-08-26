@@ -61,9 +61,19 @@
                         <TextBlock Text="Category:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
                         <TextBlock x:Name="TextBlockCategory" Text="{Binding Category}" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
                     </StackPanel>
+                    
                     <StackPanel Orientation="Horizontal" Padding="0,16,0,0">
                         <TextBlock Text="Average Cost" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI"/>
+                        <ComboBox x:Name="ComboBoxAverageCostQuantity" PlaceholderText="Pick a Quantity" SelectedIndex ="1" Width="100" SelectionChanged="ComboBoxAverageCostQuantity_SelectionChanged" Margin="16,0,8,0">
+                            <x:String>0.1</x:String>
+                            <x:String>1</x:String>
+                            <x:String>10</x:String>
+                            <x:String>100</x:String>
+                        </ComboBox>
+                        <TextBlock Text="{Binding DefaultUnit}" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="0,0,0,0"/>
+
                     </StackPanel>
+                    
                     <StackPanel Orientation="Horizontal" Padding="0,8,0,0">
                         <TextBlock Text="1 Month:" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI"/>
                         <TextBlock x:Name="TextBlockAvgCost1M" Text="No Value" Style="{ThemeResource SubtitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>

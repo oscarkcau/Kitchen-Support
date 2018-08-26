@@ -20,6 +20,10 @@
             <local:PageRecipes VerticalAlignment="Stretch"/>
         </PivotItem>
 
+        <PivotItem Header="Purchases" Margin="0,0,0,0">
+            <local:PagePurchases VerticalAlignment="Stretch"/>
+        </PivotItem>
+        
     </Pivot>
 
 </Page>

@@ -137,6 +137,9 @@
     <Compile Include="PageIngredients.xaml.cs">
       <DependentUpon>PageIngredients.xaml</DependentUpon>
     </Compile>
+    <Compile Include="PagePurchases.xaml.cs">
+      <DependentUpon>PagePurchases.xaml</DependentUpon>
+    </Compile>
     <Compile Include="PageRecipeDetails.xaml.cs">
       <DependentUpon>PageRecipeDetails.xaml</DependentUpon>
     </Compile>
@@ -209,6 +212,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="PageIngredients.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="PagePurchases.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
