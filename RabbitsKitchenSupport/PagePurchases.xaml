@@ -67,6 +67,9 @@
         <Flyout x:Name="FlyoutWarming">
             <TextBlock x:Name="FlyoutWarmingText" Foreground="Red"/>
         </Flyout>
+
+        <local:ObjectToBoolConverter x:Key="ObjectToBoolConverter" />
+
     </Page.Resources>
 
     <Grid>
@@ -141,10 +144,8 @@
 
             <extensions:DockPanel LastChildFill="True">
                 <StackPanel Orientation="Horizontal" extensions:DockPanel.Dock="Top" Margin="8,8,8,0">
-                    <TextBlock x:Name="TextBlockListHeader1" Text="Recent Purchase" Style="{ThemeResource TitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" />
-                    <TextBlock x:Name="TextBlockListHeaderDate1" Text="" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI" />
-                    <TextBlock x:Name="TextBlockListHeader2" Text="" Style="{ThemeResource TitleTextBlockStyle}" Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" />
-                    <TextBlock x:Name="TextBlockListHeaderDate2" Text="" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI" />
+                    <TextBlock x:Name="TextBlockListHeader" Text="Purchase Records" Style="{ThemeResource TitleTextBlockStyle}" FontFamily="Segoe UI" />
+                    <TextBlock x:Name="TextBlockListHeaderDate" Text="" Style="{ThemeResource TitleTextBlockStyle}"  Foreground="{ThemeResource SystemControlForegroundBaseMediumBrush}" FontFamily="Segoe UI" Margin="8,0,0,0"/>
                 </StackPanel>
 
                 <ListView x:Name="ListViewPurchases" VerticalAlignment="Stretch" FontFamily="Segoe UI" Margin="8,8,8,8" 
@@ -153,14 +154,24 @@
                           VirtualizingStackPanel.VirtualizationMode="Recycling">
                     <ListView.ItemTemplate>
                         <DataTemplate x:Name="gridViewDataTemplate" x:DataType="local:IngredientPurchase">
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,4">
-                                <Border BorderThickness="2,2,2,2" BorderBrush="Gray" >
-                                    <StackPanel VerticalAlignment="Center" Margin="8,0,8,8" MinWidth="80">
+                            <StackPanel Orientation="Horizontal">
+                                    <StackPanel VerticalAlignment="Center" Margin="8,8,8,8" MinWidth="80" MinHeight="80">
                                         <TextBlock Text="{x:Bind PurchaseMonth, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" />
                                         <TextBlock Text="{x:Bind PurchaseDate, Mode=OneWay}" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,-8,0,0" />
                                         <TextBlock Text="{x:Bind PurchaseYear, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold" Margin="0,-8,0,0" />
                                     </StackPanel>
-                                </Border>
+                                <Image x:Name="ImageThumbnail" Height="80" Width="80" Stretch="Uniform">
+                                    <Image.Source>
+                                        <Binding Path="Ingredient.ImageSource" >
+                                            <Binding.TargetNullValue>
+                                                <ImageSource>placeholder.png</ImageSource>
+                                            </Binding.TargetNullValue>
+                                        </Binding>
+                                    </Image.Source>
+                                </Image>
+                                <StackPanel Margin="8,0,8,0" MinWidth="120" HorizontalAlignment="Center" VerticalAlignment="Center">
+                                    <TextBlock Text="{x:Bind Ingredient.Name, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Center" FontWeight="Bold"/>
+                                </StackPanel>
                                 <StackPanel VerticalAlignment="Center" Margin="8,0,0,0" MinWidth="100">
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
                                         <TextBlock Text="{x:Bind Quantity, Mode=OneWay}" Style="{ThemeResource SubtitleTextBlockStyle}" HorizontalAlignment="Left"/>
@@ -180,9 +191,29 @@
 
             </extensions:DockPanel>
 
-
         </extensions:DockPanel>
 
+        <CommandBar VerticalAlignment="Bottom" DefaultLabelPosition="Right" Grid.Row="1" FontFamily="Segoe UI">
+
+            <AppBarButton Icon="Add" Label="Add Purchase" Tag="Add Purchase" Tapped="AppBarButton_Tapped"/>
+
+            <AppBarButton Icon="Edit" Label="Edit Purchase" Tag="Edit Purchase" Tapped="AppBarButton_Tapped" 
+                          IsEnabled="{x:Bind ListViewPurchases.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToBoolConverter}}"/>
+
+            <AppBarButton Icon="Delete" Label="Remove Purchase" Tag="Remove Purchase"
+                          IsEnabled="{x:Bind ListViewPurchases.SelectedItem, Mode=OneWay, Converter={StaticResource ObjectToBoolConverter}}">
+                <AppBarButton.Flyout>
+                    <Flyout x:Name="DeleteFlyout">
+                        <StackPanel>
+                            <TextBlock Style="{ThemeResource BaseTextBlockStyle}" Text="Selected ingredient will be removed. Do you want to continue?" Margin="0,0,0,12" />
+                            <Button Click="DeleteConfirmation_Click" Content="Yes, remove ingredient" />
+                        </StackPanel>
+                    </Flyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+
+        </CommandBar>        
+        
     </Grid>
     
 </Page>

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -29,6 +31,7 @@ namespace RabbitsKitchenSupport
 		// private fields
 		BrowseMode browseMode = BrowseMode.Recent;
 		bool isPageLoaded = false;
+		ObservableCollection<IngredientPurchase> purchases = new ObservableCollection<IngredientPurchase>();
 
 		// constructor
 		public PagePurchases()
@@ -43,6 +46,23 @@ namespace RabbitsKitchenSupport
 		}
 		private void CalenderViewSingleDate_CalendarViewDayItemChanging(CalendarView sender, CalendarViewDayItemChangingEventArgs args)
 		{
+			//if (isPageLoaded == false) return;
+
+			// Render basic day items.
+			if (args.Phase == 0)
+			{
+				// Register callback for next phase.
+				args.RegisterUpdateCallback(CalenderViewSingleDate_CalendarViewDayItemChanging);
+			}
+
+			if (args.Phase == 1)
+			{
+				Color[] barcolors = new Color[] { Colors.Red };
+				if (MainModelView.Current.CountIngredientPurchase(args.Item.Date) > 0)
+				{
+					args.Item.SetDensityColors(barcolors);
+				}
+			}
 
 		}
 		private void RadioButton_Checked(object sender, RoutedEventArgs e)
@@ -84,11 +104,19 @@ namespace RabbitsKitchenSupport
 					break;
 			}
 		}
-
 		private void ListViewPurchases_ItemClick(object sender, ItemClickEventArgs e)
 		{
 
 		}
+		private void AppBarButton_Tapped(object sender, TappedRoutedEventArgs e)
+		{
+
+		}
+		private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
+		{
+			this.DeleteFlyout.Hide();
+		}
+
 
 		private void UpdateRecentPurchases()
 		{
@@ -99,14 +127,25 @@ namespace RabbitsKitchenSupport
 				return;
 			}
 
-			if ((string)(ComboBoxPeriod.SelectedItem) == "All records")
-				TextBlockListHeader1.Text = "All purchases";
+			string periodText = (string)(ComboBoxPeriod.SelectedItem);
+			if (periodText == "All records")
+				TextBlockListHeaderDate.Text = "[All purchases]";
 			else
-				TextBlockListHeader1.Text = "Purchases in recent " + this.ComboBoxPeriod.SelectedItem;
+				TextBlockListHeaderDate.Text = $"[Recent {periodText}]";
 
-			TextBlockListHeaderDate1.Text = "";
-			TextBlockListHeader2.Text = "";
-			TextBlockListHeaderDate2.Text = "";
+			int periodInMonths = 0;
+			switch (periodText)
+			{
+				case "1 Month": periodInMonths = 1; break;
+				case "3 Months": periodInMonths = 3; break;
+				case "6 Months": periodInMonths = 6; break;
+				case "1 Year": periodInMonths = 12; break;
+				case "All records": periodInMonths = -1; break;
+			}
+
+			// read records from DB and update item source
+			this.purchases = MainModelView.Current.GetIngredientPurchase(periodInMonths);
+			this.ListViewPurchases.ItemsSource = this.purchases;
 		}
 		private void UpdateSingleDatePurchases()
 		{
@@ -117,12 +156,13 @@ namespace RabbitsKitchenSupport
 				return;
 			}
 
-			DateTime date = this.CalenderViewSingleDate.SelectedDates[0].Date;
+			DateTimeOffset date = this.CalenderViewSingleDate.SelectedDates[0];
+			TextBlockListHeaderDate.Text = $"[{date.ToString("dd MMM yyyy")}]";
 
-			TextBlockListHeader1.Text = "Purchases on ";
-			TextBlockListHeaderDate1.Text = date.ToString("ddd dd MMM yyyy");
-			TextBlockListHeader2.Text = "";
-			TextBlockListHeaderDate2.Text = "";
+			// read records from DB and update item source
+			this.purchases = MainModelView.Current.GetIngredientPurchase(date);
+			this.ListViewPurchases.ItemsSource = this.purchases;
+
 		}
 		private void UpdateRangePurchases()
 		{
@@ -139,8 +179,8 @@ namespace RabbitsKitchenSupport
 				return;
 			}
 
-			DateTime startDate = CalendarDatePickerStartDate.Date.Value.Date;
-			DateTime endDate = CalendarDatePickerEndDate.Date.Value.Date;
+			DateTimeOffset startDate = CalendarDatePickerStartDate.Date.Value;
+			DateTimeOffset endDate = CalendarDatePickerEndDate.Date.Value;
 
 			if (startDate >= endDate)
 			{
@@ -149,10 +189,15 @@ namespace RabbitsKitchenSupport
 				return;
 			}
 
-			TextBlockListHeader1.Text = "Purchases between ";
-			TextBlockListHeaderDate1.Text = startDate.ToString("ddd dd MMM yyyy");
-			TextBlockListHeader2.Text = " and ";
-			TextBlockListHeaderDate2.Text = endDate.ToString("ddd dd MMM yyyy");
+			TextBlockListHeaderDate.Text = "[" +
+				startDate.ToString("dd MMM yyyy") + " - " +
+				endDate.ToString("dd MMM yyyy") + "]";
+
+			// read records from DB and update item source
+			this.purchases = MainModelView.Current.GetIngredientPurchase(startDate, endDate);
+			this.ListViewPurchases.ItemsSource = this.purchases;
+
 		}
+
 	}
 }

@@ -85,6 +85,8 @@ namespace RabbitsKitchenSupport
 		}
 		private void DeleteConfirmation_Click(object sender, RoutedEventArgs e)
 		{
+			this.DeleteFlyout.Hide();
+
 			RemovePurchase();
 		}
 		private void ListViewIngredients_ItemClick(object sender, ItemClickEventArgs e)

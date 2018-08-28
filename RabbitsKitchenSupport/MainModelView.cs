@@ -181,7 +181,7 @@ namespace RabbitsKitchenSupport
 			string clause = $"WHERE IngredientID = {ingredient.ID}";
 			if (months > 0)
 			{
-				DateTimeOffset firstDate = DateTimeOffset.Now.AddMonths(-months);
+				DateTimeOffset firstDate = DateTimeOffset.Now.Date.AddMonths(-months);
 				clause += $" AND DateTicks >= {firstDate.UtcTicks}";
 			}
 
@@ -192,6 +192,67 @@ namespace RabbitsKitchenSupport
 			}
 
 			return list;
+		}
+		public ObservableCollection<IngredientPurchase> GetIngredientPurchase(int months = -1)
+		{
+			string clause = "";
+			if (months > 0)
+			{
+				DateTimeOffset firstDate = DateTimeOffset.Now.Date.AddMonths(-months);
+				clause += $" WHERE DateTicks >= {firstDate.UtcTicks}";
+			}
+
+			var list = DBHelper.Populate<IngredientPurchase>(null, clause);
+			foreach (var item in list)
+			{
+				item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
+			}
+
+			return list;
+		}
+		public ObservableCollection<IngredientPurchase> GetIngredientPurchase(DateTimeOffset date)
+		{
+			DateTimeOffset start = date.Date;
+			DateTimeOffset end = start.AddDays(1);
+			string clause =
+				$" WHERE DateTicks >= {start.UtcTicks} AND DateTicks < {end.UtcTicks}";
+
+			var list = DBHelper.Populate<IngredientPurchase>(null, clause);
+			foreach (var item in list)
+			{
+				item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
+			}
+
+			return list;
+		}
+		public ObservableCollection<IngredientPurchase> GetIngredientPurchase(DateTimeOffset startDate, DateTimeOffset endDate)
+		{
+			DateTimeOffset start = startDate.Date;
+			DateTimeOffset end = endDate.Date.AddDays(1);
+			string clause =
+				$" WHERE DateTicks >= {start.UtcTicks} AND DateTicks < {end.UtcTicks}";
+
+			var list = DBHelper.Populate<IngredientPurchase>(null, clause);
+			foreach (var item in list)
+			{
+				item.Ingredient = Ingredients.First(x => x.ID == item.IngredientID);
+			}
+
+			return list;
+		}
+		public int CountIngredientPurchase(DateTimeOffset date)
+		{
+			DateTimeOffset start = date.Date;
+			DateTimeOffset end = start.AddDays(1);
+
+			double? count = DBHelper.SclarLong<IngredientPurchase>(
+				null,
+				"COUNT(1)",
+				$" WHERE DateTicks >= {start.UtcTicks} AND DateTicks < {end.UtcTicks}");
+
+			if (count == null) return 0;
+
+			return (int)(count.Value);
 		}
 		public double? GetAverageIngredientPurchaseCost(Ingredient ingredient, int months = -1)
 		{

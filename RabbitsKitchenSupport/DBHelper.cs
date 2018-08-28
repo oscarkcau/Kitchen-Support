@@ -73,7 +73,23 @@ namespace RabbitsKitchenSupport
 			if (result == DBNull.Value) return null;
 			return (double) result;
 		}
+		public static long? SclarLong<T>(string dbTableName = null, string selectClause = "*", string whereClause = "")
+		{
+			// get the table name if no argument provided
+			Type type = typeof(T);
+			if (dbTableName == null) dbTableName = GetTableName(type);
+			if (dbTableName == null) throw new InvalidOperationException();
 
+			// prepare and execute query command
+			SqliteCommand command = new SqliteCommand();
+			command.Connection = DBHelper.Connection;
+			command.CommandText = $"SELECT {selectClause} FROM {dbTableName} {whereClause};";
+			object result = command.ExecuteScalar();
+
+			if (result == null) return null;
+			if (result == DBNull.Value) return null;
+			return (long)result;
+		}
 		public static bool Insert(IHasID item, string dbTableName = null)
 		{
 			// get the table name if no argument provided

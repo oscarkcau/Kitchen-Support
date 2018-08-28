@@ -38,7 +38,10 @@ namespace RabbitsKitchenSupport
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(PurchaseDate)));
 			}
 		}
-		public long DateTicks { get => Date.UtcTicks; set => Date = new DateTimeOffset(value, TimeSpan.Zero); }
+		public long DateTicks {
+			get => Date.UtcTicks;
+			set => Date = new DateTimeOffset(value, TimeSpan.Zero);
+		}
 		[NonDBValue] public string PurchaseYear { get => Date.ToString("yyyy"); }
 		[NonDBValue] public string PurchaseMonth { get => Date.ToString("MMM"); }
 		[NonDBValue] public string PurchaseDate { get => Date.ToString("dd"); }
